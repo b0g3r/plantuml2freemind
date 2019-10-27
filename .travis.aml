@@ -1,0 +1,17 @@
+language: python
+
+install:
+  - pip install poetry==1.0.0b2
+  - poetry install
+
+script:
+  - poetry run mypy plantuml2freemind
+  - poetry build
+
+deploy:
+  - provider: script
+    script: poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD --build
+    on:
+      repo: b0g3r/plantuml2freemind
+      branch: master
+      tags: true
