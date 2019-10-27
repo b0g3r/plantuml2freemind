@@ -13,4 +13,4 @@ deploy:
   - provider: script
     script: poetry publish --username $PYPI_USERNAME --password $PYPI_PASSWORD --build
     on:
-      condition: $TRAVIS_BRANCH == "master" || -n $TRAVIS_TAG
+      tags: true
