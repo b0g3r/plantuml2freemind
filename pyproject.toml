@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "plantuml2freemind"
+version = "0.4.0"
+description = "Converts plantuml mindmaps to freemind .mm files"
+authors = ["Boger <kotvberloge@gmail.com>"]
+license = "MIT"
+readme = 'README.md'
+repository = "https://github.com/b0g3r/plantuml2freemind"
+homepage = "https://github.com/b0g3r/plantuml2freemind"
+keywords = ['plantuml', 'freemind', 'puml', 'mm', 'converter']
+
+
+[tool.poetry.dependencies]
+python = "^3.7"
+attrs = "^19.3.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+plantuml2freemind = 'plantuml2freemind.cli:main'
