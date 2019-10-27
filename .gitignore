@@ -1,2 +1,3 @@
 dist
 *.egg-info/
+.mypy_cache
