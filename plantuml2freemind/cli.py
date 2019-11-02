@@ -10,5 +10,10 @@ application = Application(
 )
 application.add(ConvertCommand())
 
-if __name__ == '__main__':
+
+def main():
     application.run()
+
+
+if __name__ == '__main__':
+    main()

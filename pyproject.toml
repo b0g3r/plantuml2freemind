@@ -20,7 +20,7 @@ cleo = "^0.7.6"
 mypy = "^0.740"
 
 [tool.poetry.scripts]
-plantuml2freemind = 'plantuml2freemind.cli'
+plantuml2freemind = 'plantuml2freemind.cli:main'
 
 [build-system]
 requires = ["poetry>=0.12"]
