@@ -1,32 +1,17 @@
-from typing import List, Dict, Any
+from typing import List, cast
 
-import yaml
-
-
-def entry(input_file_name: str, output_file_name: str) -> None:
-    tree = parse_file(input_file_name)
-    with open(output_file_name, 'w') as output_file:
-        # mypy distributed with fixed typeshed version and in mypy 0.740
-        # it has misleading stub file for yaml library: https://github.com/python/typeshed/pull/3417
-        # TODO: remove `type: ignore` after updating to 0.750 or above
-        yaml.dump_all(  # type: ignore
-            documents=[tree],
-            stream=output_file,
-            allow_unicode=True,
-            default_flow_style=False,
-            sort_keys=False,
-        )
+from plantuml2freemind.custom_types import MindmapTreeType
 
 
-def parse_file(file_name: str) -> Dict[str, Any]:
-    with open(file_name, 'r') as puml_file:
-        file_content = puml_file.read()
+def entry(file_content: str) -> MindmapTreeType:
+    # TODO: parser function should return tree object
+    # TODO: parser function should receive string content
     nodes = list(extract_nodes(file_content))
     tree = combine_tree(nodes)
     return tree
 
 
-def extract_nodes(file_content: str) -> List[Dict[str, Any]]:
+def extract_nodes(file_content: str) -> List[MindmapTreeType]:
     file_content = file_content.strip()
     if not file_content.startswith('@startmindmap') or not file_content.endswith('@endmindmap'):
         raise TypeError('Plantuml mindmaps should started with @startmindmap and ends with @endmindmap')
@@ -43,7 +28,7 @@ def extract_nodes(file_content: str) -> List[Dict[str, Any]]:
     return nodes
 
 
-def parse_line(line: str, side: str) -> Dict[str, Any]:
+def parse_line(line: str, side: str) -> MindmapTreeType:
     """
     Return structured data about line from .puml mindmap file.
     """
@@ -51,7 +36,7 @@ def parse_line(line: str, side: str) -> Dict[str, Any]:
     return parse_line_org_mode(line, side)
 
 
-def parse_line_org_mode(line: str, side: str) -> Dict[str, Any]:
+def parse_line_org_mode(line: str, side: str) -> MindmapTreeType:
     """
     Parse OrgMode format.
 
@@ -61,18 +46,21 @@ def parse_line_org_mode(line: str, side: str) -> Dict[str, Any]:
     left_part, right_part = line.split(' ', maxsplit=1)
     nesting_level = left_part.count('*')
     style = 'fork' if left_part.endswith('_') else 'bubble'
-    node_data: Dict[str, Any] = {
-        'text': right_part.strip(),
-        'link': None,
-        'level': nesting_level,
-        'side': side,
-        'style': style,
-        'children': [],
-    }
+    node_data: MindmapTreeType = cast(
+        MindmapTreeType,
+        {
+            'text': right_part.strip(),
+            'link': None,
+            'level': nesting_level,
+            'side': side,
+            'style': style,
+            'children': [],
+        },
+    )
     return node_data
 
 
-def combine_tree(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
+def combine_tree(nodes: List[MindmapTreeType]) -> MindmapTreeType:
     root = nodes[0]
     root['left'] = []
     root['right'] = []
@@ -82,7 +70,7 @@ def combine_tree(nodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     return root
 
 
-def add_node(root: Dict[str, Any], node: Dict[str, Any]) -> None:
+def add_node(root: MindmapTreeType, node: MindmapTreeType) -> None:
     level = node['level']
     if level < 2:
         return

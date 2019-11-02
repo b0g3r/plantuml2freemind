@@ -1,22 +1,20 @@
 import xml.etree.ElementTree as ET
 from datetime import datetime
+from io import StringIO
 from typing import Optional
 
-import yaml
+from plantuml2freemind.custom_types import MindmapTreeType
 
 now = str(datetime.utcnow().timestamp())
 
 
-def entry(input_file_name: str, output_file_name: str) -> None:
-    tree_data = yaml.safe_load(input_file_name)
-    with open(output_file_name, 'wb') as output_file:
-        converted_mindmap_tree_into_mm(
-            root_node_data=tree_data,
-            output_file=output_file,
-        )
+def entry(tree: MindmapTreeType) -> str:
+    return convert_tree_into_mm(
+        root_node_data=tree,
+    )
 
 
-def converted_mindmap_tree_into_mm(root_node_data, output_file):
+def convert_tree_into_mm(root_node_data) -> str:
     xml_map = ET.Element('map')
     xml_map.set('version', '1.0.1')
     root_xml_node = create_xml_node(xml_map, root_node_data, side=None)
@@ -25,9 +23,12 @@ def converted_mindmap_tree_into_mm(root_node_data, output_file):
         parent = root_xml_node
         for node_data in branch:
             create_xml_node_tree(parent, node_data, side=branch_name)
-    tree = ET.ElementTree(xml_map)
-    tree.write(output_file, 'utf-8')
-    output_file.write(b'\n')
+    xml_tree = ET.ElementTree(xml_map)
+    file_obj = StringIO()
+    xml_tree.write(file_obj, 'unicode')
+    file_obj.write('\n')
+    return file_obj.getvalue()
+
 
 def create_xml_node(parent_xml_node, node_data, side: Optional[str]):
     xml_node = ET.SubElement(parent_xml_node, 'node')
