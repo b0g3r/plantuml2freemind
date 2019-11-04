@@ -50,11 +50,15 @@ def parse_line_org_mode(line: str, side: str) -> MindmapTreeType:
     match = re.search('\[(#[a-f0-9]{6})\]', left_part)
     color = match.group(1) if match else None
 
+    match = re.search('\[\[([a-zA-Zа-яА-Я:\/.-]*) ?([\W\w]*)?\]\]', right_part)
+    link = match.group(1) if match else None
+    text = match.group(2) if match else right_part.strip()
+
     node_data: MindmapTreeType = cast(
         MindmapTreeType,
         {
-            'text': right_part.strip(),
-            'link': None,
+            'text': text,
+            'link': link,
             'level': nesting_level,
             'side': side,
             'style': style,
