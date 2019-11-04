@@ -1,5 +1,5 @@
 from typing import List, cast
-
+import re
 from plantuml2freemind.custom_types import MindmapTreeType
 
 
@@ -46,6 +46,10 @@ def parse_line_org_mode(line: str, side: str) -> MindmapTreeType:
     left_part, right_part = line.split(' ', maxsplit=1)
     nesting_level = left_part.count('*')
     style = 'fork' if left_part.endswith('_') else 'bubble'
+
+    match = re.search('\[(#[a-f0-9]{6})\]', left_part)
+    color = match.group(1) if match else None
+
     node_data: MindmapTreeType = cast(
         MindmapTreeType,
         {
@@ -55,6 +59,7 @@ def parse_line_org_mode(line: str, side: str) -> MindmapTreeType:
             'side': side,
             'style': style,
             'children': [],
+            'color': color
         },
     )
     return node_data
