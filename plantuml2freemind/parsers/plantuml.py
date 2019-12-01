@@ -1,9 +1,10 @@
-from typing import List, cast
 import re
-from plantuml2freemind.custom_types import MindmapTreeType
+from typing import List
+
+from plantuml2freemind.custom_types import ParserNode, RootNode
 
 
-def entry(file_content: str) -> MindmapTreeType:
+def entry(file_content: str) -> RootNode:
     # TODO: parser function should return tree object
     # TODO: parser function should receive string content
     nodes = list(extract_nodes(file_content))
@@ -11,7 +12,7 @@ def entry(file_content: str) -> MindmapTreeType:
     return tree
 
 
-def extract_nodes(file_content: str) -> List[MindmapTreeType]:
+def extract_nodes(file_content: str) -> List[ParserNode]:
     file_content = file_content.strip()
     if not file_content.startswith('@startmindmap') or not file_content.endswith('@endmindmap'):
         raise TypeError('Plantuml mindmaps should started with @startmindmap and ends with @endmindmap')
@@ -28,7 +29,7 @@ def extract_nodes(file_content: str) -> List[MindmapTreeType]:
     return nodes
 
 
-def parse_line(line: str, side: str) -> MindmapTreeType:
+def parse_line(line: str, side: str) -> ParserNode:
     """
     Return structured data about line from .puml mindmap file.
     """
@@ -36,7 +37,7 @@ def parse_line(line: str, side: str) -> MindmapTreeType:
     return parse_line_org_mode(line, side)
 
 
-def parse_line_org_mode(line: str, side: str) -> MindmapTreeType:
+def parse_line_org_mode(line: str, side: str) -> ParserNode:
     """
     Parse OrgMode format.
 
@@ -54,39 +55,23 @@ def parse_line_org_mode(line: str, side: str) -> MindmapTreeType:
     link = match.group(1) if match else None
     text = match.group(2) if match else right_part.strip()
 
-    node_data: MindmapTreeType = cast(
-        MindmapTreeType,
-        {
-            'text': text,
-            'link': link,
-            'level': nesting_level,
-            'side': side,
-            'style': style,
-            'children': [],
-            'color': color
-        },
+    node_data = ParserNode(
+        text=text,
+        link=link,
+        level=nesting_level,
+        color=color,
+        style=style,
+        side=side,
     )
+
     return node_data
 
 
-def combine_tree(nodes: List[MindmapTreeType]) -> MindmapTreeType:
-    root = nodes[0]
-    root['left'] = []
-    root['right'] = []
-    root.pop('children')
-    for node in nodes[1:]:
-        add_node(root, node)
+def combine_tree(nodes: List[ParserNode]) -> RootNode:
+    first, *children = nodes
+    if not first.is_root:
+        raise ValueError('The first node in the list is not a valid root node')
+    root = first.to_root()
+    for child in children:
+        root.add_node(child)
     return root
-
-
-def add_node(root: MindmapTreeType, node: MindmapTreeType) -> None:
-    level = node['level']
-    if level < 2:
-        return
-    side = node['side']
-    children = root[side]
-    for _ in range(level - 2):
-        children = children[-1]['children']
-    node.pop('level')
-    node.pop('side')
-    children.append(node)
