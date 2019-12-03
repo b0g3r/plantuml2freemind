@@ -1,4 +1,4 @@
-from typing import Any, Container, Dict, List, Optional
+from typing import Any, Container, Dict, List, Optional, NewType
 
 from attr import asdict, attrib, attrs
 from attr.validators import in_, instance_of, optional

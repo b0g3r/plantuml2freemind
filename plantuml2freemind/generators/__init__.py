@@ -7,5 +7,5 @@ For example: yaml to freemind (.mm), yaml to plantuml (.puml).
 from plantuml2freemind.generators.mapping import GENERATORS
 
 __all__ = [
-    'GENERATORS',
+    'GENERATORS'
 ]

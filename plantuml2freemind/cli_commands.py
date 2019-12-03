@@ -6,7 +6,7 @@ from plantuml2freemind.generators import GENERATORS
 from plantuml2freemind.parsers import PARSERS
 
 SUPPORTED_INPUT_FORMATS = ('.yaml', '.puml')
-SUPPORTED_OUTPUT_FORMATS = ('.mm', '.yaml')
+SUPPORTED_OUTPUT_FORMATS = ('.mm', '.yaml', '.md')
 
 
 class ConvertCommand(Command):
