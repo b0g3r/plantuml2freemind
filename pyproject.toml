@@ -13,11 +13,11 @@ keywords = ['plantuml', 'freemind', 'puml', 'mm', 'converter']
 [tool.poetry.dependencies]
 python = "^3.7"
 attrs = "^19.3.0"
-pyyaml = "^5.1.2"
+pyyaml = "^5.3"
 cleo = "^0.7.6"
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.740"
+mypy = "^0.761"
 
 [tool.poetry.scripts]
 plantuml2freemind = 'plantuml2freemind.cli:main'
