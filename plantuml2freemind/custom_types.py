@@ -2,6 +2,7 @@ from typing import Any, Container, Dict, List, Optional, NewType
 
 from attr import asdict, attrib, attrs
 from attr.validators import in_, instance_of, optional
+from typing_extensions import Protocol
 
 LEFT_SIDE = 'left'
 RIGHT_SIDE = 'right'
@@ -9,10 +10,23 @@ VALID_SIDES = frozenset([LEFT_SIDE, RIGHT_SIDE])
 
 
 def exclude_keys(d: Dict[str, Any], excluded: Container[str]) -> Dict[str, Any]:
+    """
+    Helper function for building attr instance from dict without redundant keys.
+    """
     return {key: value for key, value in d.items() if key not in excluded}
+
 
 @attrs
 class MindmapTreeNode(object):
+    """
+    Base structure class for Mindmap (diagram format) node.
+
+    Mindmap diagram can be described as tree (one root node) with two branches where each node in branch can
+    have any amount of children. It class uses as generic parent for root and child node.
+
+    More info about mindmaps as format: https://en.wikipedia.org/wiki/Mind_map
+    """
+
     text: str = attrib(validator=instance_of(str))
     link: Optional[str] = attrib()
     style: Optional[str] = attrib()
@@ -24,6 +38,9 @@ class MindmapTreeNode(object):
 
 @attrs(kw_only=True, slots=True)
 class ChildNode(MindmapTreeNode):
+    """
+    Every child node can have any amount of children.
+    """
     children: List['ChildNode'] = attrib(
         factory=list,
     )
@@ -49,6 +66,9 @@ class ChildNode(MindmapTreeNode):
 
 @attrs(kw_only=True, slots=True)
 class RootNode(MindmapTreeNode):
+    """
+    Mindmap has only one root node with two optional branches, left and right.
+    """
     right: Optional[ChildNode] = attrib(default=None, validator=optional(instance_of(ChildNode)))
     left: Optional[ChildNode] = attrib(default=None, validator=optional(instance_of(ChildNode)))
 
@@ -89,6 +109,9 @@ class RootNode(MindmapTreeNode):
 
 @attrs(kw_only=True, slots=True, frozen=True)
 class ParserNode(MindmapTreeNode):
+    """
+    When we parse mindmap files we extract nodes as flat list and should also store some meta data.
+    """
     level: int = attrib(validator=instance_of(int))
     side: Optional[str] = attrib(validator=optional(in_(VALID_SIDES)))
 
@@ -109,3 +132,13 @@ class ParserNode(MindmapTreeNode):
 
     def to_child(self) -> ChildNode:
         return ChildNode(**self.to_node_dict())
+
+
+class GeneratorType(Protocol):
+    def __call__(self, tree: RootNode) -> str:
+        ...
+
+
+class ParserType(Protocol):
+    def __call__(self, file_content: str) -> RootNode:
+        ...

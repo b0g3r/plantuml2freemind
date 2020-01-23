@@ -27,7 +27,7 @@ def convert_tree_into_mm(root_node_data: RootNode) -> str:
     return file_obj.getvalue()
 
 
-def process_branch(parent: ET.Element, branch: Optional[ChildNode], side: str):
+def process_branch(parent: ET.Element, branch: Optional[ChildNode], side: str) -> None:
     if branch is None:
         return
     for node_data in branch.children:
@@ -52,7 +52,7 @@ def create_xml_node(parent_xml_node, node: Union[RootNode, ChildNode], side: Opt
     return xml_node
 
 
-def create_xml_node_tree(parent: ET.Element, node_data: ChildNode, side: Optional[str] = None):
+def create_xml_node_tree(parent: ET.Element, node_data: ChildNode, side: Optional[str] = None) -> ET.Element:
     xml_node = create_xml_node(parent, node_data, side)
     for child_node_data in node_data.children:
         create_xml_node_tree(

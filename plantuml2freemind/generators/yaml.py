@@ -4,10 +4,7 @@ from plantuml2freemind.custom_types import RootNode
 
 
 def entry(tree: RootNode) -> str:
-    # mypy distributed with fixed typeshed version and in mypy 0.740
-    # it has misleading stub file for yaml library: https://github.com/python/typeshed/pull/3417
-    # TODO: remove `type: ignore` after updating to 0.750 or above
-    return yaml.dump_all(  # type: ignore
+    return yaml.dump_all(
         documents=[tree.to_dict()],
         allow_unicode=True,
         default_flow_style=False,

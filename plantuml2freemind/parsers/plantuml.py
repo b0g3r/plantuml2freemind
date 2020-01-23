@@ -5,8 +5,6 @@ from plantuml2freemind.custom_types import ParserNode, RootNode
 
 
 def entry(file_content: str) -> RootNode:
-    # TODO: parser function should return tree object
-    # TODO: parser function should receive string content
     nodes = list(extract_nodes(file_content))
     tree = combine_tree(nodes)
     return tree
@@ -18,7 +16,7 @@ def extract_nodes(file_content: str) -> List[ParserNode]:
         raise TypeError('Plantuml mindmaps should started with @startmindmap and ends with @endmindmap')
     # TODO: skip caption/title/header
     nodes_lines = [line.rstrip() for line in file_content.split('\n')[1:-1] if line]
-    # default side in puml mindmaps
+    # default side in puml mindmaps is right
     side = 'right'
     nodes = []
     for node_line in nodes_lines:

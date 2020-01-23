@@ -5,8 +5,8 @@ from cleo import Command
 from plantuml2freemind.generators import GENERATORS
 from plantuml2freemind.parsers import PARSERS
 
-SUPPORTED_INPUT_FORMATS = ('.yaml', '.puml')
-SUPPORTED_OUTPUT_FORMATS = ('.mm', '.yaml', '.md')
+SUPPORTED_INPUT_FORMATS = PARSERS.keys()
+SUPPORTED_OUTPUT_FORMATS = GENERATORS.keys()
 
 
 class ConvertCommand(Command):
@@ -30,7 +30,7 @@ class ConvertCommand(Command):
                 style='error',
             )
             return
-            
+
         if os.path.isfile(output_path):
             if not self.confirm('Output path \'{0}\' is not empty. Do you want to overwrite it?'.format(output_path), default=True):
                 return
