@@ -1,5 +1,5 @@
 # plantuml2freemind
-
+[![Downloads](https://pepy.tech/badge/plantuml2freemind)](https://pepy.tech/project/plantuml2freemind)
 
 Converts plantuml mindmaps to FreeMind .mm files.
 
