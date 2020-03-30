@@ -45,8 +45,6 @@ def create_xml_node(parent_xml_node, node: Union[RootNode, ChildNode], side: Opt
         xml_edge = ET.SubElement(xml_node, 'edge')
         xml_edge.set('COLOR', node.color)
 
-    xml_node.set('CREATED', now)
-    xml_node.set('MODIFIED', now)
     if side is not None:
         xml_node.set('POSITION', side)
     return xml_node
