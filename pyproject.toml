@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "plantuml2freemind"
-version = "0.8.0"
+version = "0.8.1"
 description = "Converts plantuml mindmaps to freemind .mm files"
 authors = ["Boger <kotvberloge@gmail.com>"]
 license = "MIT"
@@ -15,6 +15,7 @@ python = "^3.7"
 attrs = "^19.3.0"
 pyyaml = "^5.3"
 cleo = "^0.7.6"
+typing-extensions = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.761"
